@@ -124,42 +124,46 @@
         </div>
 
       </div>
+    </div>
+  </section>
 
-      <!-- Top Selling -->
-      <div class="col-12">
-        <div class="card top-selling overflow-auto">
+  <div class="row mb-4">
+    <!-- Filtre par mois -->
+    <div class="col-12 d-flex justify-content-start mb-2">
+        <label class="me-2" for="filterMonth">Filtrer par mois :</label>
+        <select id="filterMonth" class="form-select w-auto">
+            <option value="">Tous les mois</option>
+            <option value="Février">Février</option>
+            <option value="Mars">Mars</option>
+            <option value="Avril">Avril</option>
+            <option value="Mai">Mai</option>
+            <option value="Juin">Juin</option>
+            <option value="Juillet">Juillet</option>
+        </select>
+    </div>
+</div>
 
-          <div class="card-body pb-0">
-            <div class="container mt-4">
-              <h2>Informations sur les immeubles et galeries</h2>
-          
-              <!-- Tableau des informations -->
-              <table class="table table-hover table-bordered text-center align-middle">
-                <thead class="">
-                    <tr>
-                        <th>#</th>
-                        <th></th>
-                        <th>Localisation</th>
-                        <th>Locaux occupés</th>
-                        <th>Locaux libres</th>
-                        <th>Détails occupés</th>
-                        <th>Détails libres</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php $index = 1; @endphp
-                    @foreach($stat[2] as $resultat)
-                        <tr>
-                            <td>{{ $index++ }}</td>
-                            <td><span class="badge bg-primary">Galerie</span> {{ $resultat['galerie_nom'] }}</td>
-                            <td class="text-start">
-                                <strong>Ville :</strong> {{ $resultat['ville'] }} <br>
-                                <strong>Province :</strong> {{ $resultat['province'] }} <br>
-                                <strong>Adresse :</strong> {{ $resultat['adresse'] }}
-                            </td>
-                            <td class="text-success fw-bold">{{ $resultat['nombreOccupes'] }}</td>
-                            <td class="text-danger fw-bold">{{ $resultat['nombreLibres'] }}</td>
-                            <td>
+<div class="row">
+    <!-- Tableau Utilisateurs -->
+    <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Détails Utilisateurs</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                   @foreach($stat[2] as $resultat)
+                    <table class="table table-bordered" id="tableUsers" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Appartement</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+       
+                            <tr>
+                               <td>
                                 <ul class="list-unstyled m-0">
                                   @forelse ( $resultat['biensOccupes'] as $occupe )
                                   <li style="text-align:Left">✅ {{ $occupe->bien_nom }}</li>
@@ -168,53 +172,95 @@
                                   @endforelse
                                 </ul>
                             </td>
-                            <td>
-                                <ul class="list-unstyled m-0">
-                                    @forelse ($resultat['biensLibres'] as $libre)
-                                        <li style="text-align:Left">{{ $libre->bien_nom }}</li>
-                                    @empty
-                                        <li>Aucun bien disponible</li>
-                                    @endforelse
-                                </ul>
-                            </td>
-                        </tr>
-                    @endforeach
-            
-                    @foreach($stat[3] as $resultat)
-                        <tr>
-                            <td>{{ $index++ }}</td>
-                            <td><span class="badge bg-warning text-dark">Immeuble</span> {{ $resultat['immeuble_nom'] }}</td>
-                            <td class="text-start">
-                                <strong>Ville :</strong> {{ $resultat['ville'] }} <br>
-                                <strong>Province :</strong> {{ $resultat['province'] }} <br>
-                                <strong>Adresse :</strong> {{ $resultat['adresse'] }}
-                            </td>
-                            <td class="text-success fw-bold">{{ $resultat['nombreOccupes'] }}</td>
-                            <td class="text-danger fw-bold">{{ $resultat['nombreLibres'] }}</td>
-                            <td>
-                                <ul class="list-unstyled m-0">
-                                    @foreach($resultat['appartementsOccupes'] as $occupe)
-                                        <li style="text-align:Left">✅ Appartement {{ $occupe->numero }}</li>
-                                    @endforeach
-                                </ul>
-                            </td>
-                            <td>
-                                <ul class="list-unstyled m-0">
-                                    @foreach($resultat['appartementsLibres'] as $libre)
-                                        <li style="text-align:Left">Appartement {{ $libre->numero }}</li>
-                                    @endforeach
-                                </ul>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+                            </tr>
+                        @endforeach  
 
+                         @foreach($stat[3] as $resultat)
+                    
+                            <tr>
+                               <td>
+                                <ul class="list-unstyled m-0">
+                                  <table class="table table-borderless">
+    <thead class="text-center"> <!-- pas de fond coloré -->
+        <tr>
+            <th>Appartement</th>
+            <th>Occupant</th>
+            <th>Date début</th>
+            <th>Statut du loyer</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($resultat['appartementsOccupes'] as $occupe)
+            <tr>
+                <td>{{ $occupe->numero }}</td>
+                <td>{{ $occupe->locataire_nom }} {{ $occupe->locataire_prenom ?? '' }}</td>
+                <td>{{ $occupe->date_debut }}</td>
+                <td>{{ $occupe->loyer_statut == 1 ? 'Payé' : 'Non payé' }}</td>
+            </tr>
+        @endforeach
+        @if(count($resultat['appartementsOccupes']) == 0)
+            <tr>
+                <td colspan="4" class="text-center">Aucun appartement occupé</td>
+            </tr>
+        @endif
+    </tbody>
+</table>
+
+                                </ul>
+                            </td>
+                            </tr>
+                        @endforeach  
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination -->
+                <nav aria-label="Page navigation" class="mt-2">
+                    <ul class="pagination justify-content-end mb-0" id="paginationUsers"></ul>
+                </nav>
+            </div>
+        </div>
     </div>
-  </section>
+
+    <!-- Tableau Immeubles -->
+    <div class="col-lg-6 col-md-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Détails Immeubles</h6>
+                <span class="badge bg-primary">6 mois</span>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="tableBuildings" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Mois</th>
+                                <th>Nouveaux utilisateurs</th>
+                                <th>Croissance</th>
+                                <th>Objectif</th>
+                                <th>Tendance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Février</td><td>1,250</td><td>+5.2%</td><td>92%</td><td>↑</td></tr>
+                            <tr><td>Mars</td><td>1,890</td><td>+10.7%</td><td>87%</td><td>↑</td></tr>
+                            <tr><td>Avril</td><td>2,340</td><td>+15.3%</td><td>95%</td><td>↑</td></tr>
+                            <tr><td>Mai</td><td>3,120</td><td>+18.9%</td><td>89%</td><td>↑</td></tr>
+                            <tr><td>Juin</td><td>3,850</td><td>+12.4%</td><td>91%</td><td>↑</td></tr>
+                            <tr><td>Juillet</td><td>4,560</td><td>+14.7%</td><td>96%</td><td>↑</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination -->
+                <nav aria-label="Page navigation" class="mt-2">
+                    <ul class="pagination justify-content-end mb-0" id="paginationBuildings"></ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
   
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -412,6 +458,67 @@
         }
       });
     });
+
+    function paginateTable(tableId, paginationId, rowsPerPage, filterValue = "") {
+    const table = document.getElementById(tableId);
+    const tbody = table.querySelector("tbody");
+    let allRows = Array.from(tbody.querySelectorAll("tr"));
+
+    // Appliquer le filtre
+    if(filterValue) {
+        allRows.forEach(row => {
+            row.style.display = row.cells[0].textContent.includes(filterValue) ? "" : "none";
+        });
+        allRows = allRows.filter(row => row.style.display !== "none");
+    } else {
+        allRows.forEach(row => row.style.display = "");
+    }
+
+    const totalPages = Math.ceil(allRows.length / rowsPerPage);
+    let currentPage = 1;
+
+    function showPage(page) {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        allRows.forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? "" : "none";
+        });
+        renderPagination();
+    }
+
+    function renderPagination() {
+        const pagination = document.getElementById(paginationId);
+        pagination.innerHTML = "";
+        for(let i=1; i<=totalPages; i++) {
+            const li = document.createElement("li");
+            li.className = "page-item" + (i === currentPage ? " active" : "");
+            const a = document.createElement("a");
+            a.className = "page-link";
+            a.href = "#";
+            a.textContent = i;
+            a.addEventListener("click", (e) => {
+                e.preventDefault();
+                currentPage = i;
+                showPage(currentPage);
+            });
+            li.appendChild(a);
+            pagination.appendChild(li);
+        }
+    }
+
+    showPage(currentPage);
+}
+
+// Fonction pour appliquer filtre à tous les tableaux
+document.getElementById("filterMonth").addEventListener("change", (e) => {
+    const month = e.target.value;
+    paginateTable("tableUsers", "paginationUsers", 5, month);
+    paginateTable("tableBuildings", "paginationBuildings", 5, month);
+});
+
+// Initialisation
+paginateTable("tableUsers", "paginationUsers", 5);
+paginateTable("tableBuildings", "paginationBuildings", 5);
   </script>
 
 @endsection

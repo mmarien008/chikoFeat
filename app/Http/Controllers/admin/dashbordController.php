@@ -239,11 +239,43 @@ class dashbordController extends Controller
             'immeubles.adresse',
             'immeubles.ville',
             'immeubles.province',
-            
+    
             'immeubles.id as immeuble_id',
             'immeubles.nom_immeuble as immeuble_nom'
         )
         ->get();
+
+    $tousAppartements = DB::table('appartements')
+    ->join('immeubles', 'immeubles.id', '=', 'appartements.id_immeuble')
+    ->leftJoin('location_aps', 'location_aps.id_appartement', '=', 'appartements.id')
+    ->leftJoin('locataires', 'locataires.id', '=', 'location_aps.id_locataire')
+    ->leftJoin('loyer_apps', function($join) {
+        $join->on('loyer_apps.id_appartement', '=', 'appartements.id')
+             ->on('loyer_apps.id_locataire', '=', 'locataires.id');
+    })
+    ->select(
+        'appartements.id as appartement_id',
+        'appartements.numero',
+        'immeubles.adresse',
+        'immeubles.ville',
+        'immeubles.province',
+        'immeubles.id as immeuble_id',
+        'immeubles.nom_immeuble as immeuble_nom',
+        'location_aps.id as location_id',
+        'location_aps.date_debut',
+        'location_aps.date_fin',
+        'locataires.id as locataire_id',
+        'locataires.nom as locataire_nom',
+        'locataires.prenom as locataire_prenom',
+        'locataires.numero as locataire_telephone',
+        'loyer_apps.id as loyer_id',
+        'loyer_apps.montant as loyer_montant',
+        'loyer_apps.date as loyer_date',
+        'loyer_apps.statut as loyer_statut'
+    )
+    ->get();
+
+
 
             // Identifier les appartements occupés
             $appartementsOccupes = DB::table('appartements')
@@ -301,6 +333,27 @@ class dashbordController extends Controller
                 'autre_biens.type'
             )
             ->get();
+
+            $tousBiens = DB::table('autre_biens')
+    ->join('galeries', 'galeries.id', '=', 'autre_biens.id_galerie')
+    ->join('location_autres', 'location_autres.id_autre_bien', '=', 'autre_biens.id')
+    ->join('locataires', 'locataires.id', '=', 'location_autres.id_locataire')
+    ->select(
+        'galeries.id as galerie_id',
+        'galeries.nom_galerie as galerie_nom',
+        'galeries.adresse',
+        'galeries.ville',
+        'galeries.province',
+        'autre_biens.id as bien_id',
+        'autre_biens.nom as bien_nom',
+        'autre_biens.type',
+        'locataires.id as locataire_id',
+        'locataires.nom as locataire_nom',
+        'locataires.prenom as locataire_prenom',
+        'locataires.numero as locataire_tel'
+    )
+    ->get();
+
     
         // Identifier les biens occupés
         $biensOccupes = DB::table('autre_biens')
