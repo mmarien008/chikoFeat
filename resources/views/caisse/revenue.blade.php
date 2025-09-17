@@ -9,7 +9,7 @@
       <th scope="col">Montant</th>
       <th scope="col">Motif</th>
       <th scope="col">Date</th>
-      <th scope="col">Actions</th>
+
     </tr>
   </thead>
   <tbody>
@@ -17,15 +17,11 @@
     
 @foreach ($revenu_externes as $revenu_externe)
     <tr>
-      <th scope="row">1</th>
-      <td>{{$revenu_externe->montant}}</td>
-      <td>{{$revenu_externe->modif}}</td>
+      <th scope="row">{{ $loop->iteration }}</th>
+      <td>{{$revenu_externe->montant}} $</td>
+      <td>{{$revenu_externe->motif}}</td>
       <td>{{ \Carbon\Carbon::parse($revenu_externe->date)->format('d/m/Y') }}</td>
-
-      <td>
-        <button class="btn btn-sm btn-warning">Modifier</button>
-        <button class="btn btn-sm btn-danger">Supprimer</button>
-      </td>
+      
     </tr>
          @endforeach
    
