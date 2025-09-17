@@ -20,11 +20,13 @@
       
       <!-- Body -->
       <div class="modal-body">
-        <form id="revenueForm">
+        <form id="revenueForm" method="post">
           <div class="mb-3">
             <label for="montant" class="form-label">Montant</label>
             <input type="number" class="form-control" id="montant" name="montant" required>
           </div>
+
+          <input type="hidden" name="user_id" value="{{ Auth::id() }}">
           
           <div class="mb-3">
             <label for="motif" class="form-label">Motif</label>
@@ -35,6 +37,7 @@
             <label for="date" class="form-label">Date</label>
             <input type="date" class="form-control" id="date" name="date" required>
           </div>
+          @csrf
         </form>
       </div>
       
@@ -44,6 +47,7 @@
         <button type="submit" form="revenueForm" class="btn btn-primary">Enregistrer</button>
       </div>
       
+  
     </div>
   </div>
 </div>

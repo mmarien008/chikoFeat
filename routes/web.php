@@ -10,15 +10,14 @@ use App\Http\Controllers\garantieController;
 use App\Http\Controllers\operationController;
 use App\Http\Controllers\admin\dashbordController;
 use App\Http\Controllers\authController;
+use App\Http\Controllers\RevenuExterneController;
 use Illuminate\Support\Facades\DB;
+
 use App\Http\Controllers\admin\userController;
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/caisse',[function(){
-       
-        return view('caisse.index' );
-    }])->name('caisse.index');
-
+    Route::get('/caisse',[RevenuExterneController::class,"index"])->name('caisse.index');
+    Route::post('/caisse',[RevenuExterneController::class,"store"])->name('caisse.store');
     // Routes pour les propriétés
     Route::prefix('propriete')->name('propriete.')->group(function () {
         Route::get('/create', [proprieteController::class, 'create'])->name('create');
