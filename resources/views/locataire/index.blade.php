@@ -11,11 +11,11 @@
       <a href="{{route("locataire.create")}}">
         <div class="btn btn-primary">Ajouter un locataire</div>
       </a>
-
+      
     </div>
   </div>
-
-
+    
+ 
 </div><!-- End Page Title -->
 
   <section class="section dashboard">
@@ -25,15 +25,15 @@
             <div class="card recent-sales overflow-auto">
                 <div class="card-body">
                     <h5 class="card-title">Type de biens</span></h5>
-
+    
                     <div class="row">
 
                         <div class="col d-flex justify-content-center align-items-center">
                             <select class="form-select" id="type" aria-label="Default select example">
-
+                                
                                 <option  value="1" >Immeuble</option>
 
-                                  <option
+                                  <option 
                                 value="2" >Galerie</option>
                             </select>
                         </div>
@@ -42,12 +42,12 @@
                             <select class="form-select" id="nom_type" aria-label="Default select example">
                                 <option >-- Sélectionner --</option>
 
-
+                              
                             </select>
                         </div>
 
-
-
+                       
+                        
                     </div>
             </div>
 
@@ -64,13 +64,13 @@
 
                 <div class="row">
 
-
+                    
                 </div>
 
                 <table class="table table-hover" id ="mon_tableau">
                   <thead>
                     <tr>
-
+                    
                       <th scope="col">Nom du locataire</th>
                       <th scope="col">Numero ou nom </th>
                       <th scope="col">Loyer fixé à</th>
@@ -78,7 +78,7 @@
                       <th scope="col">Date d'entrée</th>
                       <th scope="col"> Date de fin contrat  </th>
                       <th scope="col">  Action  </th>
-
+                      
                     </tr>
                   </thead>
 
@@ -91,13 +91,13 @@
             </div>
           </div><!-- End Recent Sales -->
 
-
+          
 
         </div>
       </div><!-- End Left side columns -->
 
-
-
+  
+ 
 
     </div>
   </section>
@@ -119,10 +119,10 @@ $(document).ready(function () {
             success: function (response) {
                 // Cible le deuxième combo
                 var secondSelect = $('#nom_type');
-
+                
                 // Vider les anciennes options
                 secondSelect.empty();
-
+                
                 // Ajouter une option par défaut
                 secondSelect.append(new Option('-- Sélectionner --', ''));
 
@@ -153,10 +153,10 @@ $(document).ready(function () {
           var date_fin="";
           let routeResilier="";
 
-
+       
             // Cible le tableau
             var tableBody = $('#mon_tableau tbody');
-
+            
             // Vider les anciennes lignes
             tableBody.empty();
 
@@ -166,7 +166,7 @@ $(document).ready(function () {
               if(item.date_fin !=null){
                  date_fin=item.date_fin ;
                 routeResilier="";
-
+                
               }else{
                 date_fin="en cours" ;
                 routeResilier = `{{ route('contrat.resilier', ['id_locataire' => '__ID_LOCATAIRE__',
@@ -175,10 +175,10 @@ $(document).ready(function () {
                                                  .replace('__ID_BIEN__', item.id_bien)
                                                  .replace('__ID_TYPE_BIEN__',id_type );
                 routeResilier=`<a style="color:red" href="${routeResilier}"> fin contrat</a>`;
-
+                
               }
 
-
+      
               if (response.message == "immeuble") {
 
                 var newRow = `
@@ -189,15 +189,15 @@ $(document).ready(function () {
                         <td>${item.garantie } $</td>
                         <td>${item.date_debut }</td>
                           <td>${date_fin}</td>
-
+               
 
                          <td>${routeResilier}</td>
-
+                       
                     </tr>
                 `;
                 // Ajouter la ligne au tableau
                 tableBody.append(newRow);
-
+                        
                     } else if (response.message == "galerie") {
 
                       var newRow = `
@@ -210,12 +210,12 @@ $(document).ready(function () {
                         <td>${item.date_debut }</td>
                          <td>${date_fin}</td>
                          <td><a href="${routeResilier}"> fin contrat</a></td>
-
+                       
                     </tr>
                 `;
                 // Ajouter la ligne au tableau
                 tableBody.append(newRow);
-
+                       
                     }
             });
         },
@@ -265,7 +265,7 @@ $(document).ready(function () {
 
 
 
-
+  
   </script>
 @endsection
 
