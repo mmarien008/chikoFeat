@@ -16,13 +16,16 @@ return new class extends Migration
             $table->string("motif");
             $table->float("montant");
             $table->date("date");
+
+            // Définir la colonne user_id AVANT la clé étrangère
+            $table->unsignedBigInteger('user_id');
+
             $table->timestamps();
 
-             $table->unsignedBigInteger('user_id'); 
-         
-            $table->foreign('user_id') 
-                  ->references('id') 
-                  ->on('users') 
+            // Définir la clé étrangère
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users')
                   ->onDelete('cascade');
         });
     }
