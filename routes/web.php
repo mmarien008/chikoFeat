@@ -14,7 +14,11 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\admin\userController;
 
 Route::middleware(['auth'])->group(function () {
-    
+    Route::get('/caisse',[function(){
+       
+        return view('caisse.index' );
+    }])->name('caisse.index');
+
     // Routes pour les propriétés
     Route::prefix('propriete')->name('propriete.')->group(function () {
         Route::get('/create', [proprieteController::class, 'create'])->name('create');
