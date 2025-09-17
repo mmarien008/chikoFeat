@@ -12,19 +12,19 @@
             <div class="col-md-4">
                 <div class="card shadow-sm p-3">
                     <h5>Revenus Locatifs</h5>
-                    <h3>{{ $locationsCount ?? 0 }}</h3>
+                    <h3>{{ $montant_total_locatif ?? 0 }} $</h3>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card shadow-sm p-3">
                     <h5>Revenus externes</h5>
-                    <h3>{{ $revenuesCount ?? 0 }}</h3>
+                    <h3>{{ $montant_total_externe ?? 0 }} $</h3>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card shadow-sm p-3">
-                    <h5>Opérations</h5>
-                    <h3>{{ $operationsCount ?? 0 }}</h3>
+                    <h5>Total</h5>
+                    <h3>{{ $montant_total_locatif+$montant_total_externe ?? 0 }} $</h3>
                 </div>
             </div>
         </div>
