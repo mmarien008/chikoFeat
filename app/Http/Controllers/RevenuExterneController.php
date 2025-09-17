@@ -10,7 +10,9 @@ class RevenuExterneController extends Controller
 
      public function index (){
 
-        return view('caisse.index');
+        $revenu_externe= Revenu_externe::all();
+
+        return view('caisse.index',compact("revenu_externe"));
 
     }
     public function store(Request $request){
