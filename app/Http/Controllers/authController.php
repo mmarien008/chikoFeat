@@ -20,9 +20,7 @@ class authController extends Controller
     public function Tologin(Request $request)
     {
 
-       
-
-
+    
 
         $request->validate([
             'phone' => 'required|string',
@@ -30,8 +28,6 @@ class authController extends Controller
         ]);
 
         
-
-
         if (Auth::attempt(['phone' => $request->phone, 'password' => $request->password])) {
             // Si l'utilisateur est authentifié, régénérer la session pour prévenir la fixation de session
             $request->session()->regenerate();
