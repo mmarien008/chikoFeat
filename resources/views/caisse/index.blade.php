@@ -1,21 +1,11 @@
 @extends('leyout.base')
 
 @section('content')
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalrevenue">
-        Ajouter une revenue externe
-    </button>
+<!-- Button trigger modal -->
+ <button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#modalrevenue">
+  Ajouter une revenue externe
+</button>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modalrevenue" tabindex="-1" aria-labelledby="modalrevenueLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <!-- Header -->
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalrevenueLabel">Revenue Externe</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
 
 <!-- Modal -->
 <div class="modal fade" id="modalrevenue" tabindex="-1" aria-labelledby="modalrevenueLabel" aria-hidden="true">
@@ -30,7 +20,8 @@
       
       <!-- Body -->
       <div class="modal-body">
-        <form id="revenueForm" method="post">
+        <form id="revenueForm" method="post" action="{{ route('caisse.store') }}">
+          @csrf
           <div class="mb-3">
             <label for="montant" class="form-label">Montant</label>
             <input type="number" class="form-control" id="montant" name="montant" required>
@@ -47,7 +38,6 @@
             <label for="date" class="form-label">Date</label>
             <input type="date" class="form-control" id="date" name="date" required>
           </div>
-          @csrf
         </form>
       </div>
       
@@ -58,7 +48,9 @@
       </div>
     
     </div>
+  </div>
+</div>
 
-       @include('caisse.revenue')
-    
+@include('caisse.revenue')
+
 @endsection

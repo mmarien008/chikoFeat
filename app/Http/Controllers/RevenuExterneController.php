@@ -20,7 +20,7 @@ class RevenuExterneController extends Controller
 
             Revenu_externe::create($request->all());
     
-            return View("propriete.create");
+            return redirect()->back()->with('succes', 'revenu ajoute');
 
         } catch (\Throwable $th) {
             dd($th->getMessage());

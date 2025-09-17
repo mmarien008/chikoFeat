@@ -1,11 +1,6 @@
 
-@extends("leyout.base")
 
-@section("content")
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalrevenue">
-  Ajouter une revenue externe
-</button>
+
 
 <table class="table table-striped">
   <thead class="table-dark">
@@ -38,9 +33,5 @@
 </table>
 
 
-
-
-
-@endsection
 
 
