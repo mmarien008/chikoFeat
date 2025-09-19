@@ -175,7 +175,7 @@ class dashbordController extends Controller
 
                 DB::raw("COUNT(*) OVER() as total_count")
             )
-            ->where('location_aps.date_debut', 'LIKE', date("Y-m").'%')
+          
             ->get()->count();
 
             $pour_galerie = DB::table('location_autres')
@@ -199,7 +199,6 @@ class dashbordController extends Controller
             'loyer_apps.date',
             DB::raw('SUM(loyer_apps.montant) as total_montant') // Agrégation pour la somme
         )
-        ->where('loyer_apps.date', 'LIKE', date("Y-m") . '%')
         ->groupBy('loyer_apps.date') // Regrouper par date
         ->get();
     

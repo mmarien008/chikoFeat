@@ -44,7 +44,7 @@ $months = [
             <div class="card info-card sales-card">
 
               <div class="card-body">
-                <h5 class="card-title">Locataire <span>| ce mois </span></h5>
+                <h5 class="card-title">Locataire </h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -65,7 +65,7 @@ $months = [
             <div class="card info-card revenue-card">
 
               <div class="card-body">
-                <h5 class="card-title">Revenue loyer <span id="detailles"> |ce mois | détails</span></h5>
+                <h5 class="card-title">Revenue loyer </h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -340,7 +340,7 @@ $months = [
         type: "GET",
         success: function (response) {
           depenseData = response.input[0];
-          updateGraphique(depenseData, null, val, periode);
+          updateGraphique(depenseData, null, val, periode,"bar");
         },
         error: function (xhr, status, error) {
           console.error('Erreur :', error);
@@ -367,132 +367,112 @@ $months = [
       });
     }
 
-    function updateGraphique(date_immeuble = null, data_galerie = null, objetd, periode) {
-      Chart.register(ChartDataLabels);
-      const ctx = document.getElementById(objetd).getContext('2d');
+    function updateGraphique(date_immeuble = null, data_galerie = null, objetd, periode, chartType = 'line') {
+    Chart.register(ChartDataLabels);
+    const ctx = document.getElementById(objetd).getContext('2d');
 
-      // Détruire le graphique existant s'il y en a un
-      if (window[objetd + 'Chart']) {
+    // Détruire le graphique existant s'il y en a un
+    if (window[objetd + 'Chart']) {
         window[objetd + 'Chart'].destroy();
-      }
+    }
 
-      const datasets = [];
-      let yAxisLabel = "MONTANT REVENUE ($)";
-      let labels, dataImmeuble, dataGalerie;
+    const datasets = [];
+    let yAxisLabel = "MONTANT REVENUE ($)";
+    let labels, dataImmeuble, dataGalerie;
 
-      // Déterminer les données à afficher selon la période
-      if (periode === "1") {
-        // Janvier - Juin
+    if (periode === "1") {
         labels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'];
         dataImmeuble = date_immeuble ? date_immeuble.slice(0, 6) : [];
         dataGalerie = data_galerie ? data_galerie.slice(0, 6) : [];
-      } else {
-        // Juillet - Décembre
+    } else {
         labels = ['Juil', 'Août', 'Sept', 'Oct', 'Nov', 'Déc'];
         dataImmeuble = date_immeuble ? date_immeuble.slice(6, 12) : [];
         dataGalerie = data_galerie ? data_galerie.slice(6, 12) : [];
-      }
+    }
 
-      if (date_immeuble && !data_galerie) {
-        // Graphique des dépenses
+    if (date_immeuble && !data_galerie) {
         datasets.push({
-          label: 'DEPENSE',
-          data: dataImmeuble,
-          backgroundColor: 'rgba(77, 108, 108, 0.5)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1,
-          borderRadius: 10,
-          barThickness: 30
-        });
-        yAxisLabel = "DEPENSE ($)";
-      } else {
-        // Graphique des revenus
-        if (date_immeuble) {
-          datasets.push({
-            label: 'IMMEUBLES',
+            label: 'DEPENSE',
             data: dataImmeuble,
-            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            backgroundColor: 'rgba(77, 108, 108, 0.5)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
             borderRadius: 10,
-            barThickness: 50
-          });
+            barThickness: 30
+        });
+        yAxisLabel = "DEPENSE ($)";
+    } else {
+        if (date_immeuble) {
+            datasets.push({
+                label: 'IMMEUBLES',
+                data: dataImmeuble,
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                borderRadius: 10,
+                barThickness: 50
+            });
         }
         if (data_galerie) {
-          datasets.push({
-            label: 'GALERIES',
-            data: dataGalerie,
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-            borderRadius: 10,
-            barThickness: 30
-          });
+            datasets.push({
+                label: 'GALERIES',
+                data: dataGalerie,
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                borderRadius: 10,
+                barThickness: 30
+            });
         }
-      }
+    }
 
-      window[objetd + 'Chart'] = new Chart(ctx, {
-        type: 'bar',
+    window[objetd + 'Chart'] = new Chart(ctx, {
+        type: chartType, // <-- ici tu définis le type
         data: {
-          labels: labels,
-          datasets: datasets
+            labels: labels,
+            datasets: datasets
         },
         options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              labels: {
-                usePointStyle: true,
-                boxWidth: 10
-              }
-            },
-            tooltip: {
-              enabled: true,
-              callbacks: {
-                label: function(tooltipItem) {
-                  return tooltipItem.dataset.label + ': ' + tooltipItem.raw + ' $';
+            responsive: true,
+            plugins: {
+                legend: {
+                   position: 'bottom' ,
+                    labels: {
+                        usePointStyle: true,
+                        boxWidth: 10,
+                    }
+                },
+              
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    color: '#000',
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    },
+                    formatter: function(value) {
+                        return value !== null ? value + ' $' : '';
+                    }
                 }
-              }
             },
-            datalabels: {
-              anchor: 'end',
-              align: 'end',
-              color: '#000',
-              font: {
-                weight: 'bold',
-                size: 12
-              },
-              formatter: function(value) {
-                return value !== null ? value + ' $' : '';
-              }
-            }
-          },
-          scales: {
-            x: {
-              grid: {
-                display: false
-              },
-              ticks: {
-                align: 'center'
-              },
-              categoryPercentage: 0.6,
-              barPercentage: 1.0
-            },
-            y: {
-              beginAtZero: true,
-              grid: {
-                display: true,
-                color: "rgba(57, 55, 55, 0.05)"
-              },
-              title: {
-                display: true,
-                text: yAxisLabel
-              }
-            }
-          }
+            scales: chartType !== 'pie' ? { // Pie n'a pas d'axes
+                x: {
+                    grid: { display: false },
+                    ticks: { align: 'center' },
+                    categoryPercentage: 0.6,
+                    barPercentage: 1.0
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { display: true, color: "rgba(57, 55, 55, 0.05)" },
+                    title: { display: true, text: yAxisLabel }
+                }
+            } : {}
         }
-      });
-    }
+    });
+}
+
 
     $(document).ready(function () {
       // Initialiser les graphiques avec la période par défaut (Juillet-Décembre)
@@ -513,7 +493,7 @@ $months = [
       $("#periodeSelectDepense").change(function() {
         const periode = $(this).val();
         if (depenseData) {
-          updateGraphique(depenseData, null, "depense", periode);
+          updateGraphique(depenseData, null, "depense", periode,"bar");
         } else {
           graphiqueDepense("depense", periode);
         }
@@ -725,5 +705,6 @@ function filterBuildings() {
 }
 
   </script>
+  
 
 @endsection

@@ -22,7 +22,7 @@
           
           <div class="mb-3">
             <label for="motif" class="form-label">Motif</label>
-            <input type="text" maxlength="50"  class="form-control" id="motif" name="motif" required>
+            <input type="text" maxlength="15"  class="form-control" id="motif" name="motif" required>
           </div>
           
           <div class="mb-3">
