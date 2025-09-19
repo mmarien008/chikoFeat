@@ -394,7 +394,7 @@ $months = [
         datasets.push({
             label: 'DEPENSE',
             data: dataImmeuble,
-            backgroundColor: 'rgba(77, 108, 108, 0.5)',
+            backgroundColor: 'rgba(75, 192, 192, 1)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
             borderRadius: 10,
@@ -427,50 +427,51 @@ $months = [
     }
 
     window[objetd + 'Chart'] = new Chart(ctx, {
-        type: chartType, // <-- ici tu définis le type
-        data: {
-            labels: labels,
-            datasets: datasets
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                   position: 'bottom' ,
-                    labels: {
-                        usePointStyle: true,
-                        boxWidth: 10,
-                    }
-                },
-              
-                datalabels: {
-                    anchor: 'end',
-                    align: 'end',
-                    color: '#000',
-                    font: {
-                        weight: 'bold',
-                        size: 12
-                    },
-                    formatter: function(value) {
-                        return value !== null ? value + ' $' : '';
-                    }
+    type: chartType, // type du graphique
+    data: {
+        labels: labels,
+        datasets: datasets
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+              position: 'bottom', 
+                labels: {
+                    usePointStyle: true,
+                    boxWidth: 10
                 }
             },
-            scales: chartType !== 'pie' ? { // Pie n'a pas d'axes
-                x: {
-                    grid: { display: false },
-                    ticks: { align: 'center' },
-                    categoryPercentage: 0.6,
-                    barPercentage: 1.0
+            datalabels: {
+                anchor: 'start',
+                align: 'end',
+                color: '#000',
+                font: {
+                    weight: 'bold',
+                    size: 12
                 },
-                y: {
-                    beginAtZero: true,
-                    grid: { display: true, color: "rgba(57, 55, 55, 0.05)" },
-                    title: { display: true, text: yAxisLabel }
+                formatter: function(value) {
+                    return value !== null ? value + ' $' : '';
                 }
-            } : {}
-        }
-    });
+            }
+            // tooltip supprimé ici
+        },
+        scales: chartType !== 'pie' ? {
+            x: {
+                grid: { display: false },
+                ticks: { align: 'center' },
+                categoryPercentage: 0.6,
+                barPercentage: 1.0
+            },
+            y: {
+                beginAtZero: true,
+                grid: { display: true, color: "rgba(57, 55, 55, 0.05)" },
+                title: { display: true, text: yAxisLabel }
+            }
+        } : {}
+    }
+});
+
 }
 
 
