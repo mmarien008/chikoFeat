@@ -20,8 +20,6 @@ class authController extends Controller
     public function Tologin(Request $request)
     {
 
-    
-
         $request->validate([
             'phone' => 'required|string',
             'password' => 'required|string',

@@ -11,7 +11,12 @@ class dashbordController extends Controller
 {
     public function index(){
         return View("admin.dashboard.index",["stat"=>[dashbordController::nombre_locataire(),
-        dashbordController::prixLoyer(),dashbordController::Status2(),dashbordController::Status(),dashbordController::depense()]]);
+        dashbordController::prixLoyer(),dashbordController::Status2(),dashbordController::Status(),
+        dashbordController::depense(),
+        dashbordController::infoBien()[0],
+        dashbordController::infoBien()[1]
+
+        ]]);
     }
 
     public function info_graphique(){
@@ -157,10 +162,7 @@ class dashbordController extends Controller
         ->havingRaw('date LIKE ?', ['2025%']) // Filtrer les dates qui commencent par '2025'
         ->having('total_montant', '>', 1000) // Condition HAVING sur le total du montant
         ->get();
-
         return $op ;
-
-
     }
 
     public static function nombre_locataire(){
@@ -231,27 +233,14 @@ class dashbordController extends Controller
 
     public static function Status(){
         // Identifier les immeubles et leurs appartements
-        $tousAppartements = DB::table('appartements')
-        ->join('immeubles', 'immeubles.id', '=', 'appartements.id_immeuble')
-        ->select(
-            'appartements.id as appartement_id',
-            'appartements.numero',
-            'immeubles.adresse',
-            'immeubles.ville',
-            'immeubles.province',
-    
-            'immeubles.id as immeuble_id',
-            'immeubles.nom_immeuble as immeuble_nom'
-        )
-        ->get();
-
+     
     $tousAppartements = DB::table('appartements')
     ->join('immeubles', 'immeubles.id', '=', 'appartements.id_immeuble')
-    ->leftJoin('location_aps', 'location_aps.id_appartement', '=', 'appartements.id')
-    ->leftJoin('locataires', 'locataires.id', '=', 'location_aps.id_locataire')
-    ->leftJoin('loyer_apps', function($join) {
+    ->join('location_aps', 'location_aps.id_appartement', '=', 'appartements.id')
+    ->join('locataires', 'locataires.id', '=', 'location_aps.id_locataire')
+    ->join('loyer_apps', function($join) {
         $join->on('loyer_apps.id_appartement', '=', 'appartements.id')
-             ->on('loyer_apps.id_locataire', '=', 'locataires.id');
+            ->on('loyer_apps.id_locataire', '=', 'locataires.id');
     })
     ->select(
         'appartements.id as appartement_id',
@@ -269,75 +258,31 @@ class dashbordController extends Controller
         'locataires.prenom as locataire_prenom',
         'locataires.numero as locataire_telephone',
         'loyer_apps.id as loyer_id',
+        'loyer_apps.date as date_loyer',
         'loyer_apps.montant as loyer_montant',
         'loyer_apps.date as loyer_date',
         'loyer_apps.statut as loyer_statut'
     )
     ->get();
+ 
 
-
-
-            // Identifier les appartements occupés
-            $appartementsOccupes = DB::table('appartements')
-            
-            ->select('id as appartement_id')
-            ->where('status','=','1')
-            ->pluck('appartement_id');
-
-            // Grouper par immeuble
-            $appartementsParImmeuble = $tousAppartements->groupBy('immeuble_id');
-
-            // Initialiser les résultats
-            $resultats = [];
-
-            foreach ($appartementsParImmeuble as $immeubleId => $appartements) {
-            // Filtrer les appartements libres pour cet immeuble
-            $libres = $appartements->reject(function ($appartement) use ($appartementsOccupes) {
-                return $appartementsOccupes->contains($appartement->appartement_id);
-            });
-
-                // Ajouter les détails pour cet immeuble
-                $resultats[] = [
-                    'immeuble_id' => $immeubleId,
-                    'immeuble_nom' => $appartements->first()->immeuble_nom,
-                    'adresse' => $appartements->first()->adresse,
-                    'ville' => $appartements->first()->ville ,
-                    'province' => $appartements->first()->province ,
-                    'nombreOccupes' => $appartements->count() - $libres->count(),
-                    'nombreLibres' => $libres->count(),
-                    'appartementsLibres' => $libres,
-                    'appartementsOccupes' => $appartements->filter(function ($appartement) use ($appartementsOccupes) {
-                        return $appartementsOccupes->contains($appartement->appartement_id);
-                    }),
-                ];
-                }
-
-                // Résultats finaux
-                return $resultats;
+        return $tousAppartements;
     }
 
 
     public static function Status2()
     {
         // Récupérer tous les biens et leurs galeries associées
-        $tousBiens = DB::table('autre_biens')
-            ->join('galeries', 'galeries.id', '=', 'autre_biens.id_galerie')
-            ->select(
-                'galeries.id as galerie_id',
-                'galeries.nom_galerie as galerie_nom',
-                'galeries.adresse',
-                'galeries.ville',
-                'galeries.province',
-                'autre_biens.id as bien_id',
-                'autre_biens.nom as bien_nom',
-                'autre_biens.type'
-            )
-            ->get();
+       
 
             $tousBiens = DB::table('autre_biens')
     ->join('galeries', 'galeries.id', '=', 'autre_biens.id_galerie')
     ->join('location_autres', 'location_autres.id_autre_bien', '=', 'autre_biens.id')
     ->join('locataires', 'locataires.id', '=', 'location_autres.id_locataire')
+      ->join('loyer_autres', function($join) {
+        $join->on('loyer_autres.id_autre_bien', '=', 'autre_biens.id')
+            ->on('loyer_autres.id_locataire', '=', 'locataires.id');
+    })
     ->select(
         'galeries.id as galerie_id',
         'galeries.nom_galerie as galerie_nom',
@@ -347,50 +292,79 @@ class dashbordController extends Controller
         'autre_biens.id as bien_id',
         'autre_biens.nom as bien_nom',
         'autre_biens.type',
+        'location_autres.date_debut',
+        'location_autres.date_fin',
         'locataires.id as locataire_id',
+         'loyer_autres.date as date_loyer',
+        'loyer_autres.statut as loyer_statut',
         'locataires.nom as locataire_nom',
         'locataires.prenom as locataire_prenom',
         'locataires.numero as locataire_tel'
     )
     ->get();
 
-    
-        // Identifier les biens occupés
-        $biensOccupes = DB::table('autre_biens')
-            ->select('autre_biens.id as bien_id')
-            ->where('status','=','1')
-            ->pluck('bien_id');
-    
-        // Grouper les biens par galerie
-        $biensParGalerie = $tousBiens->groupBy('galerie_id');
-    
-        // Initialiser les résultats
-        $resultats = [];
-    
-        foreach ($biensParGalerie as $galerieId => $biens) {
-            // Filtrer les biens libres
-            $libres = $biens->reject(function ($bien) use ($biensOccupes) {
-                return $biensOccupes->contains($bien->bien_id);
-            });
-    
-            // Ajouter les détails pour cette galerie
-            $resultats[] = [
-                'galerie_id' => $galerieId,
-                'galerie_nom' => $biens->first()->galerie_nom ?? 'Non spécifiée',
-                'adresse' => $biens->first()->adresse,
-                'ville' => $biens->first()->ville,
-                'province' => $biens->first()->province,
-                'nombreOccupes' => $biens->count() - $libres->count(),
-                'nombreLibres' => $libres->count(),
-                'biensLibres' => $libres,
-                'biensOccupes' => $biens->filter(function ($bien) use ($biensOccupes) {
-                    return $biensOccupes->contains($bien->bien_id);
-                }),
-            ];
-        }
-    
-        // Retourner les résultats
-        return $resultats;
+        // Retouner les résultats
+        return $tousBiens;
     }
+
+    public static function infoBien()
+    {
+          
+    $tousAppartements = DB::table('appartements')
+    ->join('immeubles', 'immeubles.id', '=', 'appartements.id_immeuble')
+    ->leftJoin('location_aps', 'location_aps.id_appartement', '=', 'appartements.id')
+    ->leftJoin('locataires', 'locataires.id', '=', 'location_aps.id_locataire')
+    ->select(
+        'appartements.id as appartement_id',
+        'appartements.numero as numero',
+        'immeubles.adresse',
+        'immeubles.ville',
+        'immeubles.province',
+        'immeubles.id as immeuble_id',
+        'immeubles.nom_immeuble as immeuble_nom',
+        'location_aps.id as location_id',
+        'location_aps.date_debut',
+        'location_aps.date_fin',
+        'locataires.id as locataire_id',
+        'locataires.nom as locataire_nom',
+        'locataires.prenom as locataire_prenom',
+        'locataires.numero as locataire_telephone',
+        DB::raw("CASE WHEN location_aps.id IS NULL THEN 'Libre' ELSE 'Occupé' END as statut_appartement")
+    )
+    ->get();
+
+
+    
+            $autres_bien = DB::table('autre_biens')
+    ->leftJoin('galeries', 'galeries.id', '=', 'autre_biens.id_galerie')
+    ->leftJoin('location_autres', 'location_autres.id_autre_bien', '=', 'autre_biens.id')
+    ->leftJoin('locataires', 'locataires.id', '=', 'location_autres.id_locataire')
+    ->select(
+        'galeries.id as galerie_id',
+        'galeries.nom_galerie as galerie_nom',
+        'galeries.adresse',
+        'galeries.ville',
+        'galeries.province',
+        'autre_biens.id as bien_id',
+        'autre_biens.nom as bien_nom',
+        'autre_biens.type',
+        'location_autres.date_debut',
+        'location_autres.date_fin',
+        'locataires.id as locataire_id',
+        'locataires.nom as locataire_nom',
+        'locataires.prenom as locataire_prenom',
+        'locataires.numero as locataire_tel',
+            DB::raw("CASE WHEN location_autres.id IS NULL THEN 'Libre' ELSE 'Occupé' END as statut_appartement")
+    )
+    ->get();
+
+
+    return [$tousAppartements,$autres_bien];
+
+
+    }
+
+
+    
     
 }

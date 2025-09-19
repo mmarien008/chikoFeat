@@ -45,17 +45,20 @@ class proprieteController extends Controller
         if ($type_bien == "1") {
             // Création de l'immeuble
             $immeuble = Immeuble::create([
-                'nom_immeuble' => $nom,
-                'ville' => $ville,
-                'province' => $province,
-                'adresse' => $adresse,
+                
+                'nom_immeuble' => ucfirst(strtolower($nom)),
+                'ville' => ucfirst(strtolower($ville)),
+                'province' => ucfirst(strtolower($province)),
+                'adresse' => ucfirst(strtolower($adresse)),
+
                 'nombre_appartement' => count($request->input('appart', [])),
             ]);
     
             // Création des appartements associés
             foreach ($request->input('appart') as $numero) {
                 Appartement::create([
-                    'numero' => $numero,
+                    
+                    'numero' => ucfirst(strtolower($numero)),
                     'status' => "0",
                     'loyer' => 0,
                     'garantie' => 0,

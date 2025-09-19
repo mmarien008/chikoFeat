@@ -2,6 +2,27 @@
 
 @section("content")
 
+@php
+use Carbon\Carbon;
+
+$currentYear = Carbon::now()->year;
+
+$months = [
+    '01' => 'Janvier',
+    '02' => 'Février',
+    '03' => 'Mars',
+    '04' => 'Avril',
+    '05' => 'Mai',
+    '06' => 'Juin',
+    '07' => 'Juillet',
+    '08' => 'Août',
+    '09' => 'Septembre',
+    '10' => 'Octobre',
+    '11' => 'Novembre',
+    '12' => 'Décembre',
+];
+@endphp
+
 <div class="pagetitle">
     <h1>Dashboard</h1>
     <nav>
@@ -127,90 +148,89 @@
     </div>
   </section>
 
-  <div class="row mb-4">
-    <!-- Filtre par mois -->
-    <div class="col-12 d-flex justify-content-start mb-2">
-        <label class="me-2" for="filterMonth">Filtrer par mois :</label>
-        <select id="filterMonth" class="form-select w-auto">
-            <option value="">Tous les mois</option>
-            <option value="Février">Février</option>
-            <option value="Mars">Mars</option>
-            <option value="Avril">Avril</option>
-            <option value="Mai">Mai</option>
-            <option value="Juin">Juin</option>
-            <option value="Juillet">Juillet</option>
-        </select>
-    </div>
-</div>
+  
 
 <div class="row">
     <!-- Tableau Utilisateurs -->
-    <div class="col-lg-6 col-md-12 mb-4">
+    <div class="col-lg-12 col-md-12 mb-4">
         <div class="card shadow">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Détails Utilisateurs</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Information sur le loyer </h6>
             </div>
             <div class="card-body">
+
+            <div class="row mb-4 mt-2">
+
+              <div class="col  text-center">
+                  <input type="text" id="searchInputP" class="form-control" placeholder="Rechercher un utilisateur">
+              </div>
+    
+            
+              <div class="col  d-flex justify-content-end ">
+                   
+              <select id="filterMonth" class="form-select ">
+                  <option value="">Tous les mois</option>
+                  @foreach($months as $num => $name)
+                      <option value="{{ $currentYear }}-{{ $num }}">
+                          {{ $name }}
+                      </option>
+                  @endforeach
+              </select>
+              </div>
+               
+            </div>
+              </div>
+              
                 <div class="table-responsive">
-                   @foreach($stat[2] as $resultat)
-                    <table class="table table-bordered" id="tableUsers" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Appartement</th>
-                                
-                            </tr>
+  
+                    <table class="table table-bordered-none " id="tableUsers" width="100%" cellspacing="0">
+                      <thead class="text-center"> <!-- pas de fond coloré -->
+                              <tr>
+                                  <th>#</th>
+                                  <th>Appartement/Local</th>
+                                   <th>Immeuble/Galerie</th>
+                                  <th>Occupant</th>
+                                  <th>Date de payement</th>
+                                  <th>Statut du loyer</th>
+                              </tr>
                         </thead>
-                        <tbody>
-       
-                            <tr>
-                               <td>
-                                <ul class="list-unstyled m-0">
-                                  @forelse ( $resultat['biensOccupes'] as $occupe )
-                                  <li style="text-align:Left">✅ {{ $occupe->bien_nom }}</li>
-                                  @empty
-                                  <li>Aucun bien disponible</li>
-                                  @endforelse
-                                </ul>
-                            </td>
-                            </tr>
-                        @endforeach  
-
+                        <tbody class="text-center  ">
                          @foreach($stat[3] as $resultat)
-                    
-                            <tr>
-                               <td>
-                                <ul class="list-unstyled m-0">
-                                  <table class="table table-borderless">
-    <thead class="text-center"> <!-- pas de fond coloré -->
-        <tr>
-            <th>Appartement</th>
-            <th>Occupant</th>
-            <th>Date début</th>
-            <th>Statut du loyer</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($resultat['appartementsOccupes'] as $occupe)
-            <tr>
-                <td>{{ $occupe->numero }}</td>
-                <td>{{ $occupe->locataire_nom }} {{ $occupe->locataire_prenom ?? '' }}</td>
-                <td>{{ $occupe->date_debut }}</td>
-                <td>{{ $occupe->loyer_statut == 1 ? 'Payé' : 'Non payé' }}</td>
-            </tr>
-        @endforeach
-        @if(count($resultat['appartementsOccupes']) == 0)
-            <tr>
-                <td colspan="4" class="text-center">Aucun appartement occupé</td>
-            </tr>
-        @endif
-    </tbody>
-</table>
+                                  <tr class="fw-light">
+                                      <td>{{ $loop->iteration }}</td>
+                                      <td>{{ $resultat->numero }}  
+                                        <td>
+                                          
+                                              Immeuble  {{ $resultat->immeuble_nom }}
+                                          
+                                        </td>
+                                        
+                                      </td>
+                                      <td>{{ $resultat->locataire_nom }} {{ $resultat->locataire_prenom ?? '' }}</td>
+                                      <td>{{ $resultat->date_loyer }}</td>
+                                      <td class="{{ $resultat->loyer_statut == 1 ? 'text-success fw-bolder' : 'text-danger fw-bolder' }}">
+                                          {{ $resultat->loyer_statut == 1 ? 'Payé' : 'Impayé' }}
+                                      </td>
+                                  </tr>
+                          @endforeach  
+                           @foreach($stat[2] as $resultat)
+                                  <tr class="fw-light">
+                                      <td>{{ $loop->iteration }}</td>
+                                      <td>{{ $resultat->bien_nom }} 
+                                        <td>
+                                          
+                                                {{ $resultat->galerie_nom }}
+                                        
+                                        </td>   
+                                       
+                                      <td>{{ $resultat->locataire_nom }} {{ $resultat->locataire_prenom ?? '' }}</td>
+                                      <td>{{ $resultat->date_loyer }}</td>
+                                      <td class=" {{ $resultat->loyer_statut == 1 ? 'text-success fw-bolder' : 'text-danger fw-bolder' }}">{{ $resultat->loyer_statut == 1 ? 'Payé' : 'Impayé' }}</td>
+                                  </tr>
+                          @endforeach 
+                        
+                          </tbody>
 
-                                </ul>
-                            </td>
-                            </tr>
-                        @endforeach  
-                        </tbody>
                     </table>
                 </div>
                 <!-- Pagination -->
@@ -222,41 +242,82 @@
     </div>
 
     <!-- Tableau Immeubles -->
-    <div class="col-lg-6 col-md-12 mb-4">
-        <div class="card shadow">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <h6 class="m-0 font-weight-bold text-primary">Détails Immeubles</h6>
-                <span class="badge bg-primary">6 mois</span>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="tableBuildings" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Mois</th>
-                                <th>Nouveaux utilisateurs</th>
-                                <th>Croissance</th>
-                                <th>Objectif</th>
-                                <th>Tendance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Février</td><td>1,250</td><td>+5.2%</td><td>92%</td><td>↑</td></tr>
-                            <tr><td>Mars</td><td>1,890</td><td>+10.7%</td><td>87%</td><td>↑</td></tr>
-                            <tr><td>Avril</td><td>2,340</td><td>+15.3%</td><td>95%</td><td>↑</td></tr>
-                            <tr><td>Mai</td><td>3,120</td><td>+18.9%</td><td>89%</td><td>↑</td></tr>
-                            <tr><td>Juin</td><td>3,850</td><td>+12.4%</td><td>91%</td><td>↑</td></tr>
-                            <tr><td>Juillet</td><td>4,560</td><td>+14.7%</td><td>96%</td><td>↑</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Pagination -->
-                <nav aria-label="Page navigation" class="mt-2">
-                    <ul class="pagination justify-content-end mb-0" id="paginationBuildings"></ul>
-                </nav>
-            </div>
-        </div>
+         <div class="col-lg-12 col-md-12 mb-4">
+       <div class="card shadow">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Information sur les immeubles</h6>
     </div>
+    <div class="card-body">
+
+        <!-- Filtres -->
+        <div class="row mb-3 mt-4 align-items-center">
+          <!-- Champ de recherche centré -->
+            <div class="col  text-center">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+            </div>
+        <div class="col  text-center">
+            <!-- Filtre par immeuble à gauche -->
+          <select id="filterImmeuble" class="form-select">
+            <option value="">Tous les appartements</option>
+            @foreach($stat[5]->unique('immeuble_nom') as $resultat)
+                <option value="{{ $resultat->immeuble_nom }}">
+                    IMMEUBLE {{ $resultat->immeuble_nom }}
+                </option>
+            @endforeach
+        </select>
+        </div>
+          
+
+            
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered-none" id="tableBuildings" width="100%" cellspacing="0">
+                <thead class="text-center">
+                    <tr>
+                        <th>#</th>
+                        <th>Appartement</th>
+                        <th>Immeuble</th>
+                        <th>Ville</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @foreach($stat[5] as $resultat)
+                        <tr class="fw-light">
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $resultat->numero }}</td>
+                            <td>Immeuble {{ $resultat->immeuble_nom }}</td>
+                            <td>{{ $resultat->ville }}</td>
+                            <td class="{{ $resultat->statut_appartement == 'Libre' ? 'text-success fw-bolder' : 'text-danger fw-bolder' }}">
+                                {{ $resultat->statut_appartement }}
+                            </td>
+                        </tr>
+                    @endforeach  
+                    @foreach($stat[6] as $resultat)
+                        <tr class="fw-light">
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $resultat->bien_nom }}</td>
+                            <td>{{ $resultat->galerie_nom }}</td>
+                            <td>{{ $resultat->ville }}</td>
+                            <td class="{{ $resultat->statut_appartement == 'Libre' ? 'text-success fw-bolder' : 'text-danger fw-bolder' }}">
+                                {{ $resultat->statut_appartement }}
+                            </td>
+                        </tr>
+                    @endforeach 
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="mt-2">
+            <ul class="pagination justify-content-end mb-0" id="paginationBuildings"></ul>
+        </nav>
+    </div>
+</div>
+
+    </div>
+    
 </div>
 
 
@@ -459,7 +520,7 @@
       });
     });
 
-    function paginateTable(tableId, paginationId, rowsPerPage, filterValue = "") {
+    function paginateTable(tableId, paginationId, rowsPerPage, filterValue = "",nombreCel=0) {
     const table = document.getElementById(tableId);
     const tbody = table.querySelector("tbody");
     let allRows = Array.from(tbody.querySelectorAll("tr"));
@@ -467,7 +528,7 @@
     // Appliquer le filtre
     if(filterValue) {
         allRows.forEach(row => {
-            row.style.display = row.cells[0].textContent.includes(filterValue) ? "" : "none";
+            row.style.display = row.cells[nombreCel].textContent.includes(filterValue) ? "" : "none";
         });
         allRows = allRows.filter(row => row.style.display !== "none");
     } else {
@@ -487,24 +548,114 @@
     }
 
     function renderPagination() {
-        const pagination = document.getElementById(paginationId);
-        pagination.innerHTML = "";
-        for(let i=1; i<=totalPages; i++) {
-            const li = document.createElement("li");
-            li.className = "page-item" + (i === currentPage ? " active" : "");
-            const a = document.createElement("a");
-            a.className = "page-link";
-            a.href = "#";
-            a.textContent = i;
-            a.addEventListener("click", (e) => {
-                e.preventDefault();
-                currentPage = i;
-                showPage(currentPage);
-            });
-            li.appendChild(a);
-            pagination.appendChild(li);
-        }
+    const pagination = document.getElementById(paginationId);
+    pagination.innerHTML = "";
+
+    let maxPagesToShow = 5; // maximum de boutons visibles
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = startPage + maxPagesToShow - 1;
+
+    if (endPage > totalPages) {
+        endPage = totalPages;
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
     }
+
+    // Bouton "Précédent"
+    const prevLi = document.createElement("li");
+    prevLi.className = "page-item" + (currentPage === 1 ? " disabled" : "");
+    const prevA = document.createElement("a");
+    prevA.className = "page-link";
+    prevA.href = "#";
+    prevA.textContent = "«";
+    prevA.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    });
+    prevLi.appendChild(prevA);
+    pagination.appendChild(prevLi);
+
+    // Si début > 1, ajouter "1 …"
+    if (startPage > 1) {
+        const li = document.createElement("li");
+        li.className = "page-item";
+        const a = document.createElement("a");
+        a.className = "page-link";
+        a.href = "#";
+        a.textContent = "1";
+        a.addEventListener("click", (e) => {
+            e.preventDefault();
+            currentPage = 1;
+            showPage(currentPage);
+        });
+        li.appendChild(a);
+        pagination.appendChild(li);
+
+        const dots = document.createElement("li");
+        dots.className = "page-item disabled";
+        dots.innerHTML = `<span class="page-link">…</span>`;
+        pagination.appendChild(dots);
+    }
+
+    // Pages principales
+    for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement("li");
+        li.className = "page-item" + (i === currentPage ? " active" : "");
+        const a = document.createElement("a");
+        a.className = "page-link";
+        a.href = "#";
+        a.textContent = i;
+        a.addEventListener("click", (e) => {
+            e.preventDefault();
+            currentPage = i;
+            showPage(currentPage);
+        });
+        li.appendChild(a);
+        pagination.appendChild(li);
+    }
+
+    // Si fin < totalPages, ajouter "… last"
+    if (endPage < totalPages) {
+        const dots = document.createElement("li");
+        dots.className = "page-item disabled";
+        dots.innerHTML = `<span class="page-link">…</span>`;
+        pagination.appendChild(dots);
+
+        const li = document.createElement("li");
+        li.className = "page-item";
+        const a = document.createElement("a");
+        a.className = "page-link";
+        a.href = "#";
+        a.textContent = totalPages;
+        a.addEventListener("click", (e) => {
+            e.preventDefault();
+            currentPage = totalPages;
+            showPage(currentPage);
+        });
+        li.appendChild(a);
+        pagination.appendChild(li);
+    }
+
+    // Bouton "Suivant"
+    const nextLi = document.createElement("li");
+    nextLi.className = "page-item" + (currentPage === totalPages ? " disabled" : "");
+    const nextA = document.createElement("a");
+    nextA.className = "page-link";
+    nextA.href = "#";
+    nextA.textContent = "»";
+    nextA.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    });
+    nextLi.appendChild(nextA);
+    pagination.appendChild(nextLi);
+}
+
 
     showPage(currentPage);
 }
@@ -512,13 +663,67 @@
 // Fonction pour appliquer filtre à tous les tableaux
 document.getElementById("filterMonth").addEventListener("change", (e) => {
     const month = e.target.value;
-    paginateTable("tableUsers", "paginationUsers", 5, month);
-    paginateTable("tableBuildings", "paginationBuildings", 5, month);
+    paginateTable("tableUsers", "paginationUsers", 5, month,4);
+
 });
 
 // Initialisation
 paginateTable("tableUsers", "paginationUsers", 5);
-paginateTable("tableBuildings", "paginationBuildings", 5);
+paginateTable("tableBuildings", "paginationBuildings", 15);
+
+// Filtrage recherche + immeuble
+document.getElementById("searchInput").addEventListener("keyup", function() {
+    filterBuildings();
+});
+
+
+
+document.getElementById("searchInputP").addEventListener("keyup", function() {
+    filterName();
+});
+
+
+
+
+document.getElementById("filterImmeuble").addEventListener("change", function() {
+    filterBuildings();
+});
+
+function filterName() {
+    const searchValue = document.getElementById("searchInputP").value.toLowerCase();
+  
+
+    const rows = document.querySelectorAll("#tableUsers tbody tr");
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const immeuble = row.cells[3].textContent.toLowerCase();
+
+         if ((text.includes(searchValue))) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+
+    });
+}
+
+function filterBuildings() {
+    const searchValue = document.getElementById("searchInput").value.toLowerCase();
+    const immeubleValue = document.getElementById("filterImmeuble").value.toLowerCase();
+
+    const rows = document.querySelectorAll("#tableBuildings tbody tr");
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const immeuble = row.cells[2].textContent.toLowerCase();
+
+        if ((text.includes(searchValue)) && (immeubleValue === "" || immeuble.includes(immeubleValue))) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+
   </script>
 
 @endsection
