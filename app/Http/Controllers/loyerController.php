@@ -14,21 +14,13 @@ use Illuminate\Support\Facades\DB;
 class loyerController extends Controller
 {
   public function create() {
-    
     $locataires = locataire::orderBy('nom')
                             ->orderBy('post_nom')
                             ->orderBy('prenom')
                             ->get();
 
-    // On prend le premier locataire comme sélection par défaut
-    $id_locataire = $locataires->first() ? $locataires->first()->id : null;
-
-    return view("loyer.create", [
-        "mes_biens" => ["locataires" => $locataires],
-        "id_locataire" => $id_locataire
-    ]);
+    return view("loyer.create", ["mes_biens" => ["locataires" => $locataires]]);
 }
-
 public function save(Request $request)
 {
     $moisSelectionnes = $request->input('moisp', []); 
@@ -215,9 +207,6 @@ public function save(Request $request)
 
     public function showLocation($id_locataire)  {
 
-     
-
-
             $pour_immeuble = DB::table('location_aps')
             ->join('locataires', 'locataires.id', '=', 'location_aps.id_locataire')
 
@@ -263,7 +252,9 @@ public function save(Request $request)
                 ->where('locataires.id', '=', $id_locataire) // Condition sur le nom_galerie
                 ->get();
 
-return View("loyer.create",["mes_biens" =>["pour_immeubles"=>$pour_immeuble,"locataires"=>locataire::all(),"pour_galerie"=> $pour_galerie]]);
+                return View("loyer.create",["mes_biens" =>["pour_immeubles"=>$pour_immeuble,"locataires"=>locataire::all(),"pour_galerie"=> $pour_galerie,
+                
+                ],"id_locataire"=>$id_locataire]);
 
     
     }
@@ -385,9 +376,6 @@ return View("loyer.create",["mes_biens" =>["pour_immeubles"=>$pour_immeuble,"loc
     public function  completerLoyer(  $id_propriete,  $id_bien,$mois){
 
    
-
-       
-
         if( $id_propriete==1){
 
       
