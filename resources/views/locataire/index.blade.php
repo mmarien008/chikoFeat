@@ -103,7 +103,6 @@
   </section>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-
 $(document).ready(function () {
     // Configuration CSRF pour les requêtes AJAX
     $.ajaxSetup({
@@ -111,113 +110,30 @@ $(document).ready(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
     function fetchData(selectedValue) {
-        // Requête AJAX
-        $.ajax({
-            url: "{{ route('locataire.show', ['type' => ':type']) }}".replace(':type', selectedValue), // URL de la route avec le paramètre
-            type: "GET", // Méthode HTTP
-            success: function (response) {
-                // Cible le deuxième combo
-                var secondSelect = $('#nom_type');
-                
-                // Vider les anciennes options
-                secondSelect.empty();
-                
-                // Ajouter une option par défaut
-                secondSelect.append(new Option('-- Sélectionner --', ''));
-
-                // Parcours des données reçues
-                $.each(response.input, function (index, item) {
-                    if (response.message == "immeuble") {
-                        secondSelect.append(new Option(item.nom_immeuble, item.id));
-                    } else if (response.message == "galerie") {
-                        secondSelect.append(new Option(item.nom_galerie, item.id));
-                    }
-                });
-            },
-            error: function (xhr, status, error) {
-                console.error('Erreur :', error);
-            }
-        });
-    }
-
-    // Fonction pour effectuer la requête AJAX
-    function fetchDataNomType(id_type, id_nom_type) {
-
-    // Requête AJAX
+    var secondSelect = $('#nom_type');
     $.ajax({
-        url: "{{ route('locataire.showdetaille', ['type' => ':type', 'id_nom' => ':id_nom']) }}"
-            .replace(':type', id_type).replace(':id_nom', id_nom_type), // URL de la route avec les paramètres
-        type: "GET", // Méthode HTTP
+        url: "{{ route('locataire.show', ['type' => ':type']) }}".replace(':type', selectedValue),
+        type: "GET",
         success: function (response) {
-          var date_fin="";
-          let routeResilier="";
+            // Vider et remplir le deuxième select
+            secondSelect.empty();
+            secondSelect.append(new Option('-- Sélectionner --', ''));
 
-       
-            // Cible le tableau
-            var tableBody = $('#mon_tableau tbody');
-            
-            // Vider les anciennes lignes
-            tableBody.empty();
-
-            // Parcours des données reçues
+            // Remplir avec les éléments reçus
             $.each(response.input, function (index, item) {
-
-              if(item.date_fin !=null){
-                 date_fin=item.date_fin ;
-                routeResilier="";
-                
-              }else{
-                date_fin="en cours" ;
-                routeResilier = `{{ route('contrat.resilier', ['id_locataire' => '__ID_LOCATAIRE__',
-                'id_bien' => '__ID_BIEN__',  'id_type_bien' => '__ID_TYPE_BIEN__']) }}`;
-                    routeResilier = routeResilier.replace('__ID_LOCATAIRE__', item.id_locataire)
-                                                 .replace('__ID_BIEN__', item.id_bien)
-                                                 .replace('__ID_TYPE_BIEN__',id_type );
-                routeResilier=`<a style="color:red" href="${routeResilier}"> fin contrat</a>`;
-                
-              }
-
-      
-              if (response.message == "immeuble") {
-
-                var newRow = `
-                    <tr>
-                        <td>${item.nom} ${item.post_nom} ${item.prenom}</td>
-                        <td>${item.numero }</td>
-                        <td>${item.loyer} $</td>
-                        <td>${item.garantie } $</td>
-                        <td>${item.date_debut }</td>
-                          <td>${date_fin}</td>
-               
-
-                         <td>${routeResilier}</td>
-                       
-                    </tr>
-                `;
-                // Ajouter la ligne au tableau
-                tableBody.append(newRow);
-                        
-                    } else if (response.message == "galerie") {
-
-                      var newRow = `
-                    <tr>
-                        <td>${item.nom} ${item.post_nom} ${item.prenom}</td>
-
-                        <td>${item.numero }</td>
-                        <td>${item.loyer} $</td>
-                        <td>${item.garantie } $</td>
-                        <td>${item.date_debut }</td>
-                         <td>${date_fin}</td>
-                         <td><a href="${routeResilier}"> fin contrat</a></td>
-                       
-                    </tr>
-                `;
-                // Ajouter la ligne au tableau
-                tableBody.append(newRow);
-                       
-                    }
+                if (response.message == "immeuble") {
+                    secondSelect.append(new Option(item.nom_immeuble, item.id));
+                } else if (response.message == "galerie") {
+                    secondSelect.append(new Option(item.nom_galerie, item.id));
+                }
             });
+
+            // Sélection automatique du premier élément
+            if (response.input.length > 0) {
+                secondSelect.val(response.input[0].id).trigger('change'); // prend le premier élément
+            }
         },
         error: function (xhr, status, error) {
             console.error('Erreur :', error);
@@ -226,27 +142,64 @@ $(document).ready(function () {
 }
 
 
-    // Événement "change" sur le premier sélecteur
+    function fetchDataNomType(id_type, id_nom_type) {
+        $.ajax({
+            url: "{{ route('locataire.showdetaille', ['type' => ':type', 'id_nom' => ':id_nom']) }}"
+                .replace(':type', id_type).replace(':id_nom', id_nom_type),
+            type: "GET",
+            success: function (response) {
+                var tableBody = $('#mon_tableau tbody');
+                tableBody.empty();
+                $.each(response.input, function (index, item) {
+                    var date_fin = item.date_fin ?? "en cours";
+                    var routeResilier = "";
+                    if (!item.date_fin) {
+                        routeResilier = `{{ route('contrat.resilier', ['id_locataire' => '__ID_LOCATAIRE__', 'id_bien' => '__ID_BIEN__', 'id_type_bien' => '__ID_TYPE_BIEN__']) }}`
+                            .replace('__ID_LOCATAIRE__', item.id_locataire)
+                            .replace('__ID_BIEN__', item.id_bien)
+                            .replace('__ID_TYPE_BIEN__', id_type);
+                        routeResilier = `<a style="color:red" href="${routeResilier}">fin contrat</a>`;
+                    }
+
+                    var newRow = `
+                        <tr>
+                            <td>${item.nom} ${item.post_nom} ${item.prenom}</td>
+                            <td>${item.numero}</td>
+                            <td>${item.loyer} $</td>
+                            <td>${item.garantie} $</td>
+                            <td>${item.date_debut}</td>
+                            <td>${date_fin}</td>
+                            <td>${routeResilier}</td>
+                        </tr>
+                    `;
+                    tableBody.append(newRow);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Erreur :', error);
+            }
+        });
+    }
+
+    // Événements change
     $('#type').change(function () {
         var selectedValue = $(this).val();
-        fetchData(selectedValue); // Appelle la fonction fetchData avec la valeur sélectionnée
+        fetchData(selectedValue);
     });
-
-
 
     $('#nom_type').change(function () {
-      var selectedValue2 = $('#type').val();
-        var selectedValue = $(this).val();
-
-        fetchDataNomType(selectedValue2, selectedValue); // Appelle la fonction fetchData avec la valeur sélectionnée
+        var id_type = $('#type').val();
+        var id_nom_type = $(this).val();
+        fetchDataNomType(id_type, id_nom_type);
     });
 
-    // Appel initial au chargement de la page
-    var initialValue = $('#type').val(); // Récupère la valeur initiale du sélecteur
-    if (initialValue) {
-        fetchData(initialValue); // Appelle la fonction fetchData si une valeur est sélectionnée
+    // Sélection par défaut au chargement
+    var initialType = $('#type').val();
+    if (initialType) {
+        fetchData(initialType); // Cela sélectionne le premier nom_type et affiche le tableau
     }
 });
+
 
 
 

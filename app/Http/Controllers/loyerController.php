@@ -13,10 +13,22 @@ use Illuminate\Support\Facades\DB;
 
 class loyerController extends Controller
 {
-    public function create(){
+  public function create() {
+    
+    $locataires = locataire::orderBy('nom')
+                            ->orderBy('post_nom')
+                            ->orderBy('prenom')
+                            ->get();
 
-        return View("loyer.create",["mes_biens" =>["locataires"=>locataire::all()]]);
-    }
+    // On prend le premier locataire comme sélection par défaut
+    $id_locataire = $locataires->first() ? $locataires->first()->id : null;
+
+    return view("loyer.create", [
+        "mes_biens" => ["locataires" => $locataires],
+        "id_locataire" => $id_locataire
+    ]);
+}
+
 public function save(Request $request)
 {
     $moisSelectionnes = $request->input('moisp', []); 

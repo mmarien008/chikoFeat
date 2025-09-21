@@ -25,13 +25,15 @@
                     <div class="row">
 
                         <div class="col d-flex justify-content-center align-items-center">
-                            <select class="form-select" id="locataire" aria-label="Default select example">
-                                <option >Nom du locataire</option>
-                                @foreach ($mes_biens["locataires"] as $locataire )
-                                <option 
-                             value="{{$locataire->id}}" >{{$locataire->nom}} {{$locataire->post_nom}} {{$locataire->prenom}}</option>
-                                @endforeach
-                            </select>
+                       <select class="form-select" id="locataire" aria-label="Default select example">
+                          @foreach ($mes_biens["locataires"] as $locataire)
+                              <option value="{{ $locataire->id }}" 
+                                  @if(isset($id_locataire) && $id_locataire == $locataire->id) selected @endif>
+                                  {{ $locataire->nom }} {{ $locataire->post_nom }} {{ $locataire->prenom }}
+                              </option>
+                          @endforeach
+                      </select>
+
                         </div>
                     </div>
             </div>
