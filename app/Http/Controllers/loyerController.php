@@ -17,13 +17,17 @@ class loyerController extends Controller
 
         return View("loyer.create",["mes_biens" =>["locataires"=>locataire::all()]]);
     }
-    public function save(Request $request)
+public function save(Request $request)
 {
-    $moisSelectionnes = $request->input('moisp', []); // tableau des mois cochés
+    $moisSelectionnes = $request->input('moisp', []); 
+
+    // Vérifier si aucun mois n'est sélectionné
+    if (empty($moisSelectionnes)) {
+        return redirect()->back()->with('error', 'Veuillez sélectionner au moins un mois.');
+    }
 
     foreach($moisSelectionnes as $mois) {
-        dd($mois );
-        $dateLoyer = $mois ; 
+        $dateLoyer = $mois;
 
         if($request->input("type") == "1") {
             // Appartement
@@ -109,9 +113,10 @@ class loyerController extends Controller
             }
         }
     }
+    return redirect()->route('loyer.create')->with('success', 'Loyer payé avec succes');
 
-    return view("loyer.create", ["mes_biens" => ["locataires" => locataire::all()]]);
 }
+
 
 
 

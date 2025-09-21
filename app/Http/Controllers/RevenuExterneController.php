@@ -24,22 +24,32 @@ class RevenuExterneController extends Controller
             'montant_total_locatif'
         ));
 
-
     }
     public function store(Request $request){
 
-         try {
+       try {
+    // Validation
+    $validated = $request->validate([
+        'montant' => 'required|numeric|min:0|max:99999999999999999999.99', 
+        'motif'   => 'required|string|max:255',
+        'date'    => 'required|date',
+    ]);
 
-            Revenu_externe::create($request->all());
-    
-            return redirect()->back()->with('succes', 'revenu ajoute');
+    // Enregistrement
+    Revenu_externe::create([
+        'montant' => $validated['montant'],
+        'motif'   => $validated['motif'],
+        'date'    => $validated['date'],
+        'user_id' => auth()->id(), // si tu veux lier à l’utilisateur connecté
+    ]);
 
-        } catch (\Throwable $th) {
-            dd($th->getMessage());
-            return redirect()->back()->with('error', 'erreur lors de l enregistrement');
-        }
+    return redirect()->back()->with('succes', 'Revenu ajouté avec succès ✅');
 
-         
+    } catch (\Throwable $th) {
+        // En cas d'erreur
+        return redirect()->back()->with('error', 'Erreur lors de l\'enregistrement : '.$th->getMessage());
+    }
+
 
         }
 

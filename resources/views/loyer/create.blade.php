@@ -2,6 +2,12 @@
 @extends("leyout.base")
 
 @section("content")
+
+@if(session('success'))
+    <div class="alert alert-danger">
+        {{ session('success') }}
+    </div>
+@endif
 <div class="pagetitle">
     <h1>Payer un loyer</h1>
 
@@ -31,8 +37,6 @@
             </div>
 
         </div>
-
-
 
       <!-- Left side columns -->
       <div class="col-lg-12">
