@@ -164,12 +164,12 @@ $months = [
 
             <div class="row mb-4 mb-3">
 
-              <div class="col-12 col-md-6  text-center">
+              <div class="col-12 col-md-6 mb-3  text-center">
                   <input type="text" id="searchInputP" class="form-control" placeholder="Rechercher un utilisateur">
               </div>
     
             
-              <div class="col-12 col-md-6  d-flex justify-content-end ">
+              <div class="col-12 col-md-6 mb-3"  d-flex justify-content-end ">
                    
               <select id="filterMonth" class="form-select ">
                   <option value="">Tous les mois</option>
