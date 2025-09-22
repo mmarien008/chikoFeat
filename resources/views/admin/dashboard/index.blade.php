@@ -162,7 +162,7 @@ $months = [
             </div>
             <div class="card-body">
 
-            <div class="row mb-4 mb-3">
+            <div class="row  mt-3">
 
               <div class="col-12 col-md-6 mb-3  text-center">
                   <input type="text" id="searchInputP" class="form-control" placeholder="Rechercher un utilisateur">
