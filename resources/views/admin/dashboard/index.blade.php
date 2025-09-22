@@ -109,64 +109,67 @@ $months = [
         </div>
       </div><!-- End Left side columns -->
 
-      <div class="row">
-        <div class="col">
-          <div class="card info-card revenue-card  ">
-            <div class="card-body my-3">
-              <div class="row mb-3 justify-content-end">
-                <div class="col-md-4">
-                
-                  <select id="periodeSelect" class="form-select">
-                    <option value="1">Janvier - Juin</option>
-                    <option value="2" selected>Juillet - Décembre</option>
-                  </select>
-                </div>
-              </div>
-              <canvas id="myChart" style="margin-top:55px;"></canvas>
-            </div>
+<div class="row">
+  <div class="col">
+    <div class="card info-card revenue-card">
+      <div class="card-body my-3">
+        <div class="row mb-3 justify-content-end">
+          <div class="col-md-4">
+            <select id="periodeSelect" class="form-select">
+              <option value="1">Janvier - Juin</option>
+              <option value="2" selected>Juillet - Décembre</option>
+            </select>
           </div>
         </div>
-        
-        <div class="col">
-          <div class="card info-card revenue-card">
-            <div class="card-body  my-3">
-              <div class="row mb-3  justify-content-end">
-                <div class="col-md-4">
-              
-                  <select id="periodeSelectDepense" class="form-select">
-                    <option value="1">Janvier - Juin</option>
-                    <option value="2" selected>Juillet - Décembre</option>
-                  </select>
-                </div>
-              </div>
-              <canvas id="depense" style="margin-top:55px;"></canvas>
-            </div>
-          </div>
+        <!-- Conteneur responsive -->
+        <div style="position: relative; height:40vh; width:100%">
+          <canvas id="myChart"></canvas>
         </div>
-
       </div>
+    </div>
+  </div>
+  
+  <div class="col">
+    <div class="card info-card revenue-card">
+      <div class="card-body my-3">
+        <div class="row mb-3 justify-content-end">
+          <div class="col-md-4">
+            <select id="periodeSelectDepense" class="form-select">
+              <option value="1">Janvier - Juin</option>
+              <option value="2" selected>Juillet - Décembre</option>
+            </select>
+          </div>
+        </div>
+        <!-- Conteneur responsive -->
+        <div style="position: relative; height:40vh; width:100%">
+          <canvas id="depense"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
     </div>
   </section>
 
   
-
 <div class="row">
     <!-- Tableau Utilisateurs -->
-    <div class="col-lg-12 col-md-12 mb-4">
+    <div class="col-lg-12 col-md-12 mb-3">
         <div class="card shadow">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Information sur le loyer </h6>
             </div>
             <div class="card-body">
 
-            <div class="row mb-4 mt-2">
+            <div class="row mb-4 mb-3">
 
-              <div class="col  text-center">
+              <div class="col-12 col-md-6  text-center">
                   <input type="text" id="searchInputP" class="form-control" placeholder="Rechercher un utilisateur">
               </div>
     
             
-              <div class="col  d-flex justify-content-end ">
+              <div class="col-12 col-md-6  d-flex justify-content-end ">
                    
               <select id="filterMonth" class="form-select ">
                   <option value="">Tous les mois</option>
@@ -252,10 +255,10 @@ $months = [
         <!-- Filtres -->
         <div class="row mb-3 mt-4 align-items-center">
           <!-- Champ de recherche centré -->
-            <div class="col  text-center">
+            <div class="col-12 col-md-6 mb-3  text-center">
                 <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
             </div>
-        <div class="col  text-center">
+        <div class="col-12 col-md-6 mb-3  text-center">
             <!-- Filtre par immeuble à gauche -->
           <select id="filterImmeuble" class="form-select">
             <option value="">Tous les appartements</option>
@@ -426,51 +429,52 @@ $months = [
         }
     }
 
-    window[objetd + 'Chart'] = new Chart(ctx, {
-    type: chartType, // type du graphique
-    data: {
-        labels: labels,
-        datasets: datasets
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-              position: 'bottom', 
-                labels: {
-                    usePointStyle: true,
-                    boxWidth: 10
-                }
-            },
-            datalabels: {
-                anchor: 'start',
-                align: 'end',
-                color: '#000',
-                font: {
-                    weight: 'bold',
-                    size: 12
-                },
-                formatter: function(value) {
-                    return value !== null ? value + ' $' : '';
-                }
-            }
-            // tooltip supprimé ici
+  window[objetd + 'Chart'] = new Chart(ctx, {
+  type: chartType,
+  data: {
+    labels: labels,
+    datasets: datasets
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false, // ✅ clé pour la responsivité
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          usePointStyle: true,
+          boxWidth: 10
+        }
+      },
+      datalabels: {
+        anchor: 'start',
+        align: 'end',
+        color: '#000',
+        font: {
+          weight: 'bold',
+          size: 12
         },
-        scales: chartType !== 'pie' ? {
-            x: {
-                grid: { display: false },
-                ticks: { align: 'center' },
-                categoryPercentage: 0.6,
-                barPercentage: 1.0
-            },
-            y: {
-                beginAtZero: true,
-                grid: { display: true, color: "rgba(57, 55, 55, 0.05)" },
-                title: { display: true, text: yAxisLabel }
-            }
-        } : {}
-    }
+        formatter: function(value) {
+          return value !== null ? value + ' $' : '';
+        }
+      }
+    },
+    scales: chartType !== 'pie' ? {
+      x: {
+        grid: { display: false },
+        ticks: { align: 'center' },
+        categoryPercentage: 0.6,
+        barPercentage: 1.0
+      },
+      y: {
+        beginAtZero: true,
+        grid: { display: true, color: "rgba(57, 55, 55, 0.05)" },
+        title: { display: true, text: yAxisLabel }
+      }
+    } : {}
+  }
 });
+
 
 }
 

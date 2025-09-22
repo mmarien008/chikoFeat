@@ -30,7 +30,7 @@
     
                     <div class="row">
 
-                        <div class="col d-flex justify-content-center align-items-center">
+                        <div class="col-12 col-md-4 mb-3 d-flex justify-content-center align-items-center">
                             <select class="form-select" id="type_immeuble" aria-label="Default select example">
                                
                                 <option value="1">Immeuble</option>
@@ -38,26 +38,26 @@
                             </select>
                         </div>
 
-                        <div class="col d-flex justify-content-center align-items-center">
+                        <div class="col-12 col-md-4 mb-3  d-flex justify-content-center align-items-center">
                             <select class="form-select" id="nom_immeuble"  aria-label="Default select example">
                                 
                             </select>
                         </div>
 
-                        <div  class="col d-flex justify-content-center align-items-center">
+                        <div  class="col-12 col-md-4 mb-3  d-flex justify-content-center align-items-center">
                             <input class="form-control" type="month" id="date" name="dates">
                         </div>
 
                     </div>
                     <div class="row mt-2">
-                        <div class="col d-flex justify-content-center align-items-center">
+                        <div class="col-12 col-md-6 mb-3  d-flex justify-content-center align-items-center">
                             <select class="form-select" id="type_rapport"  aria-label="Default select example">
                                 <option >Type de rapport</option>
                              
                             </select>
                         </div>
 
-                        <div class="col">
+                        <div class="col-12  mb-3   col-md-6">
                           
                               <a href="{{route("pdf.telecharger")}}" class="btn btn-primary">Imprimer le rapport</a>
                         

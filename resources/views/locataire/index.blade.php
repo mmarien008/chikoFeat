@@ -28,7 +28,7 @@
     
                     <div class="row">
 
-                        <div class="col d-flex justify-content-center align-items-center">
+                        <div class="col-12 col-md-6 mb-3 d-flex justify-content-center align-items-center">
                             <select class="form-select" id="type" aria-label="Default select example">
                                 
                                 <option  value="1" >Immeuble</option>
@@ -38,7 +38,7 @@
                             </select>
                         </div>
 
-                        <div class="col d-flex justify-content-center align-items-center">
+                        <div class="col-12 col-md-6  mb-3 d-flex justify-content-center align-items-center">
                             <select class="form-select" id="nom_type" aria-label="Default select example">
                                 <option >-- Sélectionner --</option>
 
