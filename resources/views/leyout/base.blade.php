@@ -62,126 +62,55 @@
 
 
 
-        <nav class="header-nav ms-auto">
-            <ul class="d-flex align-items-center">
+       <nav class="header-nav ms-auto">
+  <ul class="d-flex align-items-center">
 
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li><!-- End Search Icon-->
+    <!-- Profil utilisateur -->
+    <li class="nav-item dropdown pe-3">
+      <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+        <!-- Avatar rond -->
+        <div class="rounded-circle border px-2 py-2 bg-success text-white">
+          <i class="bi bi-person"></i>
+        </div>
 
-                <li class="nav-item dropdown">
+        <!-- Nom utilisateur -->
+        <span class="d-none d-md-block dropdown-toggle ps-2">
+          @if (auth()->check())
+            {{ auth()->user()->name }}
+          @else
+            vous devez vous connecté
+          @endif
+        </span>
+      </a>
 
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                        <li class="dropdown-header">
-                            You have 4 new notifications
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+      <!-- Menu déroulant -->
+      <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+        <li class="dropdown-header text-center">
+          <h6>
+            @if (auth()->check())
+              {{ auth()->user()->name }}
+            @else
+              Utilisateur
+            @endif
+          </h6>
+          <span class="text-muted small">Connecté</span>
+        </li>
 
-                        <li class="notification-item">
-                            <i class="bi bi-exclamation-circle text-warning"></i>
-                            <div>
-                                <h4>Lorem Ipsum</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>30 min. ago</p>
-                            </div>
-                        </li>
+        <li><hr class="dropdown-divider"></li>
 
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+        <!-- Déconnexion -->
+        <li>
+          <form method="POST" action="{{ route('logout') }}" class="text-center">
+            @csrf
+            <button type="submit" class="btn btn-sm btn-danger w-100">Déconnexion</button>
+          </form>
+        </li>
+      </ul>
+    </li><!-- End Profile Nav -->
 
-                        <li class="notification-item">
-                            <i class="bi bi-x-circle text-danger"></i>
-                            <div>
-                                <h4>Atque rerum nesciunt</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>1 hr. ago</p>
-                            </div>
-                        </li>
+  </ul>
+</nav><!-- End Icons Navigation -->
 
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        <li class="notification-item">
-                            <i class="bi bi-check-circle text-success"></i>
-                            <div>
-                                <h4>Sit rerum fuga</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>2 hrs. ago</p>
-                            </div>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-
-
-
-                    </ul><!-- End Notification Dropdown Items -->
-
-                </li><!-- End Notification Nav -->
-
-                <li class="nav-item dropdown">
-
-
-
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-                        <li class="dropdown-header">
-                            You have 3 new messages
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                        </li>
-
-
-
-
-
-
-
-                    </ul><!-- End Messages Dropdown Items -->
-
-                </li><!-- End Messages Nav -->
-
-                <li class="nav-item dropdown pe-3">
-
-                    <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#"
-                        data-bs-toggle="dropdown">
-                        <div class="rounded-circle border px-2  py-2 bg-success text-white p-3">
-
-                        </div>
-
-                        <span class="d-none d-md-block dropdown-toggle ps-2">
-                            @if (auth()->check())
-                                {{ auth()->user()->name }}
-                            @else
-                                <p>Vous n'êtes pas connecté !</p>
-                            @endif
-                        </span>
-                    </a><!-- End Profile Iamge Icon -->
-
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-
-
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-
-                                <button type="submit" class="btn btn-danger">Déconnexion</button>
-                            </form>
-
-                        </li>
-
-                    </ul><!-- End Profile Dropdown Items -->
-                </li><!-- End Profile Nav -->
-
-            </ul>
-        </nav><!-- End Icons Navigation -->
 
     </header><!-- End Header -->
 
